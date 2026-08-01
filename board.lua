@@ -35,14 +35,14 @@ function updateWizard()
 end
 
 function updateItems()
-  if #filterTable(items, function(x) return x.state.type == "enemy" end) <= 3 then
+  if #filterTable(items, function(x) return x.name == "flame" end) <= spawnRate then
     local randOpenSquare = getRandomOpenSquare()
     add(items, {
       row = randOpenSquare.row,
       column = randOpenSquare.column,
       name = "flame",
       age = 0,
-      state = stateList["flame"]["start"]
+      state = stateList["flame"]["spawn"]
     })
   end
 end

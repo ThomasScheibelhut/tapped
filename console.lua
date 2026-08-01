@@ -17,7 +17,7 @@
 
   tabletXMin = 100
   tabletXMax = 110
-  TalbetYMin = 90
+  TalbetYMin = 87
   TabletYDiff = 5
   TabletSpaceBetween = 10  
   

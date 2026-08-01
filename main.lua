@@ -6,10 +6,14 @@ gameState = "splashScreen"
 startingDistance = 5
 squareDistance = 16
 logging = ""  
+spawnRate = 3
 
 spriteList= {
   gemIdle1 = 21,
   gemIdle2 = 22,
+  flameSpawn1 = 23,
+  flameSpawn2 = 24,
+  flameSpawn3 = 25,
   flameIdle1 = 5,
   flameIdle2 = 4,
   flameIdle3 = 6,
@@ -80,6 +84,31 @@ stateList = {
     }
   },
   flame = {
+    spawn = {
+        type = "warning",
+        name = "spawn",
+        next = "start",
+        animation = {
+          {name = "flameSpawn1", lifeTime = 4},
+          {name = "flameSpawn2", lifeTime = 8},
+          {name = "flameSpawn3", lifeTime = 12},
+          {name = "flameSpawn1", lifeTime = 16},
+          {name = "flameSpawn2", lifeTime = 20},
+          {name = "flameSpawn3", lifeTime = 24},
+          {name = "flameSpawn1", lifeTime = 28},
+          {name = "flameSpawn2", lifeTime = 32},
+          {name = "flameSpawn3", lifeTime = 36},
+          {name = "flameSpawn1", lifeTime = 40},
+          {name = "flameSpawn2", lifeTime = 44},
+          {name = "flameSpawn3", lifeTime = 48},
+          {name = "flameSpawn1", lifeTime = 52},
+          {name = "flameSpawn2", lifeTime = 56},
+          {name = "flameSpawn3", lifeTime = 60},
+          {name = "flameSpawn1", lifeTime = 64},
+          {name = "flameSpawn2", lifeTime = 68},
+          {name = "flameSpawn3", lifeTime = 72}
+      } 
+    },
     start = {
         type = "enemy",
         name = "start",
@@ -151,10 +180,6 @@ function _init()
 end
 
 function _update()
-  if gameState == "gameOver" then
-    return
-  end
-
   if gameState == "splashScreen" then
     if btnp(4) then
       gameState = "playing"
