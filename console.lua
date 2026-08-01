@@ -61,7 +61,9 @@ function drawConsoleState()
   animateTable(tablets)
 
   circfill(playerLocX,playerLocY, 4, 6)
-  circfill(playerLocX+2,playerLocY, 4, 0)
+  circfill(playerLocX+1,playerLocY, 4, 6)
+  circfill(playerLocX+1,playerLocY, 3, 0)
+
   for energy in all(energies) do
     circfill(energy.x,energy.y, 3, 10)
     circfill(energy.x,energy.y, 2, 8)
@@ -70,13 +72,12 @@ end
 
 function fireCharge()
     chargeStatus = 1
-    energy={
+    add(energies,{
         charge = chargeAmount,
         x=playerLocX,
         y=playerLocY, 
         lane = playerLane
-    }
-    add(energies,energy)
+    })
     chargeAmount = chargeMin
 end
 

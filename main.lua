@@ -1,6 +1,12 @@
 --wizard command 0.1
 --#wopedogebo-0#
 
+score = 0
+gameState = "splashScreen"
+startingDistance = 5
+squareDistance = 16
+logging = ""  
+
 spriteList= {
   gemIdle1 = 21,
   gemIdle2 = 22,
@@ -141,26 +147,27 @@ stateList = {
   }
 }
 
-gameState = "splashScreen"
-startingDistance = 5
-squareDistance = 16
-logging = ""  
-
 function _init()
 end
 
 function _update()
+  if gameState == "gameOver" then
+    return
+  end
+
   if gameState == "splashScreen" then
     if btnp(4) then
       gameState = "playing"
     end
   elseif gameState == "playing" then
+    updateEnergies()
     updateWizard()
     updatePlayer()
     updateItems()
-    updateEnergies()
   elseif gameState == "gameOver" then
-    print("game over")
+    if btnp(4) then
+      gameState = "playing"
+    end
   end
 end
 
@@ -172,25 +179,36 @@ function _draw()
     map()
     drawBoardState()
     drawConsoleState()
-    print(logging)
   elseif gameState == "gameOver" then
     print("game over")
+    print("your score was "..score.."!")
+    print("press a button to retry")
+  else
+    print("game state: "..gameState)
   end
+
+  print(logging)
 end
 
 function animateTable(table)
     for item in all(table) do
+      if item.state ~= nil then
         if item.age > item.state.animation[#item.state.animation].lifeTime then
             item.state = stateList[item.name][item.state.next]
             item.age = 0
         end
         local activeAnimation = filterTable(item.state.animation, function(x) return x.lifeTime >= item.age end)[1]
+        if not activeAnimation then
+            logging = item.name.." "..item.age
+            return
+        end
         if item.row != nil then
           drawToPosition(spriteList[activeAnimation.name], item.row, item.column)
         else
           spr(spriteList[activeAnimation.name], item.x, item.y)
         end
         item.age += 1
+      end
     end
 end
 

@@ -25,10 +25,12 @@ function updateWizard()
             column = randOpenSquare.column,
             name = "gem",
             age = 0,
-            state = stateList["gem"]["start"]
+            state = stateList["gem"]["idle"]
         })
+        score += 1
     elseif checkMapCollision(wiz.row, wiz.column, "enemy") then 
         gameState = "gameOver"
+        return
     end
 end
 
@@ -44,6 +46,7 @@ function updateItems()
     })
   end
 end
+
 
 function drawBoardState()
   animateTable(items)
