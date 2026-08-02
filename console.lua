@@ -8,7 +8,7 @@
   chargeMin = 1
   chargeMax = 15
   chargeStatus = 1
-  chargeRate = .1
+  chargeRate = .2
   chargeAmount = chargeMin
   chargeMin = 1
   chargeMax = 15

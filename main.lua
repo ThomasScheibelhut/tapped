@@ -7,6 +7,8 @@ startingDistance = 5
 squareDistance = 16
 logging = ""  
 spawnRate = 3
+holdingButton = false
+infinite = -1
 
 spriteList= {
   gemIdle1 = 21,
@@ -45,6 +47,7 @@ stateList = {
         type = "player",
         name = "start",
         next = "idle",
+        loop = 0,
         animation = {
           {name = "wizardStart1", lifeTime = 5}, 
           {name = "wizardStart2", lifeTime = 10}
@@ -54,6 +57,7 @@ stateList = {
         type = "player",
         name = "idle",
         next = "idle",
+        loop = infinite,
         animation = {
           {name = "wizardIdle1", lifeTime = 5}, 
           {name = "wizardIdle2", lifeTime = 10}
@@ -63,6 +67,7 @@ stateList = {
         type = "player",
         name = "jump",
         next = "idle",
+        loop = 0,
         animation = {
           {name = "wizardIdle1", lifeTime = 1}, 
           {name = "wizardIdle2", lifeTime = 2},
@@ -77,6 +82,7 @@ stateList = {
         type = "point",
         name = "idle",
         next = "idle",
+        loop = infinite,
         animation = {
           {name = "gemIdle1", lifeTime = 5}, 
           {name = "gemIdle2", lifeTime = 10}
@@ -88,53 +94,54 @@ stateList = {
         type = "warning",
         name = "spawn",
         next = "start",
+        loop = 25,
         animation = {
           {name = "flameSpawn1", lifeTime = 4},
           {name = "flameSpawn2", lifeTime = 8},
-          {name = "flameSpawn3", lifeTime = 12},
-          {name = "flameSpawn1", lifeTime = 16},
-          {name = "flameSpawn2", lifeTime = 20},
-          {name = "flameSpawn3", lifeTime = 24},
-          {name = "flameSpawn1", lifeTime = 28},
-          {name = "flameSpawn2", lifeTime = 32},
-          {name = "flameSpawn3", lifeTime = 36},
-          {name = "flameSpawn1", lifeTime = 40},
-          {name = "flameSpawn2", lifeTime = 44},
-          {name = "flameSpawn3", lifeTime = 48},
-          {name = "flameSpawn1", lifeTime = 52},
-          {name = "flameSpawn2", lifeTime = 56},
-          {name = "flameSpawn3", lifeTime = 60},
-          {name = "flameSpawn1", lifeTime = 64},
-          {name = "flameSpawn2", lifeTime = 68},
-          {name = "flameSpawn3", lifeTime = 72}
+          {name = "flameSpawn3", lifeTime = 12}
       } 
     },
     start = {
         type = "enemy",
         name = "start",
         next = "idle",
+        loop = 0,
         animation = {
           {name = "flameStart1", lifeTime = 8},
-          {name = "flameStart2", lifeTime = 14},
-          {name = "flameStart3", lifeTime = 20}
+          {name = "flameStart2", lifeTime = 12},
+          {name = "flameStart3", lifeTime = 14}
       } 
     },
     idle = {
         type = "enemy",
         name = "idle",
-        next = "idle",
+        next = "despawn",
+        loop = 30,
         animation = {
           {name = "flameIdle1", lifeTime = 7 + rnd(3)}, 
           {name = "flameIdle2", lifeTime = 17 + rnd(3)},
-          {name = "flameIdle3", lifeTime = 27 + rnd(3)}
+          {name = "flameIdle3", lifeTime = 27 + rnd(3)},
       } 
-    }
+    },
+    despawn = {
+        type = "warning",
+        name = "despawn",
+        next = "remove",
+        loop = 0,
+        animation = {
+          {name = "flameSpawn1", lifeTime = 4},
+          {name = "flameSpawn2", lifeTime = 8},
+          {name = "flameSpawn3", lifeTime = 12},
+      } 
+    },
+    remove = {name = "remove"}
   },
   tablet1 = {
     idle = {
         type = "tablet",
         name = "idle",
         next = "idle",
+        loop = infinite,
         animation = {
           {name = "tablet1Idle1", lifeTime = 5}, 
           {name = "tablet1Idle2", lifeTime = 10}
@@ -146,6 +153,7 @@ stateList = {
         type = "tablet",
         name = "idle",
         next = "idle",
+        loop = infinite,
         animation = {
           {name = "tablet2Idle1", lifeTime = 5}, 
           {name = "tablet2Idle2", lifeTime = 10}
@@ -157,6 +165,7 @@ stateList = {
         type = "tablet",
         name = "idle",
         next = "idle",
+        loop = infinite,
         animation = {
           {name = "tablet3Idle1", lifeTime = 5}, 
           {name = "tablet3Idle2", lifeTime = 10}
@@ -168,6 +177,7 @@ stateList = {
         type = "tablet",
         name = "idle",
         next = "idle",
+        loop = infinite,
         animation = {
           {name = "tablet4Idle1", lifeTime = 5}, 
           {name = "tablet4Idle2", lifeTime = 10}
@@ -181,14 +191,18 @@ end
 
 function _update()
   if gameState == "splashScreen" then
-    if btnp(4) then
+    if btn(4) or btn(4) then
+      holdingButton = true
+      return
+    elseif holdingButton then
+      holdingButton = false
       gameState = "playing"
     end
   elseif gameState == "playing" then
-    updateEnergies()
-    updateWizard()
     updatePlayer()
+    updateEnergies()
     updateItems()
+    updateWizard()
   elseif gameState == "gameOver" then
     if btnp(4) then
       gameState = "playing"
@@ -217,24 +231,38 @@ end
 
 function animateTable(table)
     for item in all(table) do
-      if item.state ~= nil then
+      if item.state.animation then
         if item.age > item.state.animation[#item.state.animation].lifeTime then
+          if item.state.loop == 0 then
             item.state = stateList[item.name][item.state.next]
-            item.age = 0
+          else
+            item.state.loop -= 1
+          end
+          item.age = 0
         end
         local activeAnimation = filterTable(item.state.animation, function(x) return x.lifeTime >= item.age end)[1]
-        if not activeAnimation then
-            logging = item.name.." "..item.age
-            return
+        if activeAnimation then
+          if item.row != nil then
+            drawToPosition(spriteList[activeAnimation.name], item.row, item.column)
+          else
+            spr(spriteList[activeAnimation.name], item.x, item.y)
+          end
+          item.age += 1
         end
-        if item.row != nil then
-          drawToPosition(spriteList[activeAnimation.name], item.row, item.column)
-        else
-          spr(spriteList[activeAnimation.name], item.x, item.y)
-        end
-        item.age += 1
       end
     end
+end
+
+function deepcopy(t)
+    if type(t) != "table" then
+        return t
+    end
+
+    local c = {}
+    for k,v in pairs(t) do
+        c[k] = deepcopy(v)
+    end
+    return c
 end
 
 function searchTable(tbl, field, value)

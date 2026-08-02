@@ -35,14 +35,19 @@ function updateWizard()
 end
 
 function updateItems()
+  for item in all(filterTable(items, function(x) return x.state.name == "remove" end)) do
+    del(items, item)
+  end
+
   if #filterTable(items, function(x) return x.name == "flame" end) <= spawnRate then
     local randOpenSquare = getRandomOpenSquare()
+    local stateTree = stateList.flame.spawn
     add(items, {
       row = randOpenSquare.row,
       column = randOpenSquare.column,
       name = "flame",
       age = 0,
-      state = stateList["flame"]["spawn"]
+      state = deepcopy(stateTree)
     })
   end
 end
@@ -50,7 +55,6 @@ end
 
 function drawBoardState()
   animateTable(items)
-  --draw cannon shots
 end
 
 function drawToPosition(sprite, row, column)
