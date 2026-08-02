@@ -1,12 +1,10 @@
 --wizard command 0.1
 --#wopedogebo-0#
 
-score = 0
 gameState = "splashScreen"
 startingDistance = 5
 squareDistance = 16
 logging = ""  
-spawnRate = 4
 holdingButton = false
 infinite = -1
 songPart = 0
@@ -204,7 +202,7 @@ end
 
 function _update()
   if gameState == "splashScreen" then
-    if btn(4) or btn(4) then
+    if btn(4) or btn(5) then
       holdingButton = true
       return
     elseif holdingButton then
@@ -213,17 +211,13 @@ function _update()
       gameState = "playing"
     end
   elseif gameState == "playing" then
-    if songPart == 0 then
-      music(0)
-      songPart += 1
-    end
     updatePlayer()
     updateEnergies()
     updateItems()
     updateWizard()
   elseif gameState == "gameOver" then
     music(-1)
-    if btn(4) or btn(4) then
+    if btn(4) or btn(5) then
       holdingButton = true
       return
     elseif holdingButton then
@@ -237,25 +231,37 @@ end
 function resetGame()
   resetBoard()
   resetConsole()
+  music(0)
 end
 
 function _draw()
   cls()
   if gameState == "splashScreen" then
-    print("Hello, press a button")
+    drawSplashScreen()
   elseif gameState == "playing" then
     map()
     drawBoardState()
     drawConsoleState()
   elseif gameState == "gameOver" then
-    print("game over")
-    print("your score was "..score.."!")
-    print("press a button to retry")
+    print("game over", 42, 10, 8)
+    print("game over", 43, 11, 9)
+    print("your score was "..score.."!", 30, 30, 8)
+    print("your score was "..score.."!", 31, 31, 9)
+    print("press any button to retry", 18, 50, 8)
+    print("press any button to retry", 19, 51, 9)
   else
     print("game state: "..gameState)
   end
 
   print(logging)
+end
+
+function drawSplashScreen()
+  circfill(75,45, 36, 1)
+  circfill(40,60, 22, 2)
+  circfill(60,80, 18, 3)
+  print("Hello, press any button", 29, 109, 8)
+  print("Hello, press any button", 30, 110, 9)
 end
 
 function animateTable(table)

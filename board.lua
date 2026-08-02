@@ -1,4 +1,7 @@
 function resetBoard()
+  score = 0
+  spawnRate = 4
+
   items = {
     {
         row = 1,
@@ -36,8 +39,10 @@ function updateWizard()
       if wiz.state.name == "shield" then
           del(items, filterTable(items, function(x) return x.name == "flame" and x.row == wiz.row and x.column == wiz.column end)[1])
       else
+        --make lose game function
         sfx(4, 0)
         gameState = "gameOver"
+        items = {}
         return
       end
     end
