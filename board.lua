@@ -19,6 +19,8 @@ function updateWizard()
     local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
     if checkMapCollision(wiz.row, wiz.column, "point") then
         del(items, searchTable(items, "name", "gem"))
+        sfx( 0, 0 )
+        spawnRate += flr(score/2)
         local randOpenSquare = getRandomOpenSquare()
         add(items, {
             row = randOpenSquare.row,
@@ -40,15 +42,16 @@ function updateItems()
   end
 
   if #filterTable(items, function(x) return x.name == "flame" end) <= spawnRate then
-    local randOpenSquare = getRandomOpenSquare()
-    local stateTree = stateList.flame.spawn
-    add(items, {
-      row = randOpenSquare.row,
-      column = randOpenSquare.column,
-      name = "flame",
-      age = 0,
-      state = deepcopy(stateTree)
-    })
+    if flr(rnd(10)) == 1 then
+      local randOpenSquare = getRandomOpenSquare()
+      add(items, {
+        row = randOpenSquare.row,
+        column = randOpenSquare.column,
+        name = "flame",
+        age = 0,
+        state = deepcopy(stateList.flame.spawn)
+      })
+    end
   end
 end
 

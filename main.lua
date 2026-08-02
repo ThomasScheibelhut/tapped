@@ -94,7 +94,7 @@ stateList = {
         type = "warning",
         name = "spawn",
         next = "start",
-        loop = 25,
+        loop = 5,
         animation = {
           {name = "flameSpawn1", lifeTime = 4},
           {name = "flameSpawn2", lifeTime = 8},
@@ -116,7 +116,7 @@ stateList = {
         type = "enemy",
         name = "idle",
         next = "despawn",
-        loop = 30,
+        loop = 8,
         animation = {
           {name = "flameIdle1", lifeTime = 7 + rnd(3)}, 
           {name = "flameIdle2", lifeTime = 17 + rnd(3)},
@@ -234,7 +234,7 @@ function animateTable(table)
       if item.state.animation then
         if item.age > item.state.animation[#item.state.animation].lifeTime then
           if item.state.loop == 0 then
-            item.state = stateList[item.name][item.state.next]
+            item.state = deepcopy(stateList[item.name][item.state.next])
           else
             item.state.loop -= 1
           end
