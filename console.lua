@@ -115,11 +115,11 @@ function activateTablet(ability)
 end
 
 function updatePlayer()
-    if btnp(2) and playerLocY != playerLocYMin then 
+    if btnp(2) and playerLane != 1 then 
     playerLocY -= playerMovement 
     playerLane -= 1 
   end
-  if btnp(3) and playerLocY != playerLocYMax then 
+  if btnp(3) and playerLane != 4 then 
     playerLocY += playerMovement 
     playerLane += 1
   end

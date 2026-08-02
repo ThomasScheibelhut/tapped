@@ -94,7 +94,7 @@ stateList = {
         type = "warning",
         name = "spawn",
         next = "start",
-        loop = 5,
+        loop = 8,
         animation = {
           {name = "flameSpawn1", lifeTime = 4},
           {name = "flameSpawn2", lifeTime = 8},
