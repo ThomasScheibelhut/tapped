@@ -6,7 +6,7 @@ gameState = "splashScreen"
 startingDistance = 5
 squareDistance = 16
 logging = ""  
-spawnRate = 3
+spawnRate = 4
 holdingButton = false
 infinite = -1
 
@@ -31,6 +31,8 @@ spriteList= {
   wizardJump3 = 15,
   wizardJump4 = 14,
   wizardJump5 = 13,
+  wizardShield1 = 14,
+  wizardShield2 = 15,
   tablet1Idle1 = 50,
   tablet1Idle2 = 50,
   tablet2Idle1 = 51,
@@ -74,6 +76,16 @@ stateList = {
           {name = "wizardIdle2", lifeTime = 1},
           {name = "wizardIdle2", lifeTime = 2},
           {name = "wizardIdle2", lifeTime = 1}
+      } 
+    },
+    shield = {
+        type = "player",
+        name = "shield",
+        next = "idle",
+        loop = 400,
+        animation = {
+          {name = "wizardShield1", lifeTime = 10}, 
+          {name = "wizardShield2", lifeTime = 90},
       } 
     }
   },

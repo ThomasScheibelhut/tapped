@@ -8,7 +8,7 @@
   chargeMin = 1
   chargeMax = 15
   chargeStatus = 1
-  chargeRate = .2
+  chargeRate = .3
   chargeAmount = chargeMin
   chargeMin = 1
   chargeMax = 15
@@ -56,6 +56,31 @@
         state = stateList["tablet4"]["idle"]
     } 
   }
+
+function updatePlayer()
+  if btnp(2) and playerLane != 1 then 
+    playerLocY -= playerMovement 
+    playerLane -= 1 
+  end
+  if btnp(3) and playerLane != 4 then 
+    playerLocY += playerMovement 
+    playerLane += 1
+  end
+
+  if btn(4) then
+    chargeStatus = 2
+    if(chargeAmount < chargeMax) then
+      chargeAmount += chargeRate
+    end
+  elseif chargeAmount > chargeMin then
+    fireCharge()
+  end
+
+  if btn(5) then
+    local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
+    wiz.state = deepcopy(stateList["wizard"]["shield"])
+  end
+end
 
 function drawConsoleState()
   animateTable(tablets)
@@ -111,25 +136,5 @@ function activateTablet(ability)
         wiz.column -= 1
     elseif ability == 4 and wiz.row > 1 then
         wiz.row -=1
-  end
-end
-
-function updatePlayer()
-    if btnp(2) and playerLane != 1 then 
-    playerLocY -= playerMovement 
-    playerLane -= 1 
-  end
-  if btnp(3) and playerLane != 4 then 
-    playerLocY += playerMovement 
-    playerLane += 1
-  end
-
-  if btn(4) then
-    chargeStatus = 2
-    if(chargeAmount < chargeMax) then
-      chargeAmount += chargeRate
-    end
-  elseif chargeAmount > chargeMin then
-    fireCharge()
   end
 end

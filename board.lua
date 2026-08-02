@@ -30,7 +30,7 @@ function updateWizard()
             state = stateList["gem"]["idle"]
         })
         score += 1
-    elseif checkMapCollision(wiz.row, wiz.column, "enemy") then 
+    elseif checkMapCollision(wiz.row, wiz.column, "enemy") and wiz.state.name != "shield" then 
         gameState = "gameOver"
         return
     end
