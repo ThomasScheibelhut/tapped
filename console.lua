@@ -1,3 +1,4 @@
+function resetConsole()
   playerLocYMin = 50
   playerLocYMax = 200
   playerLocX = 10
@@ -56,6 +57,7 @@
         state = stateList["tablet4"]["idle"]
     } 
   }
+end
 
 function updatePlayer()
   if btnp(2) and playerLane != 1 then 
@@ -126,7 +128,7 @@ end
 
 function activateTablet(ability)
     local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
-    wiz.state = stateList["wizard"]["jump"]
+    --wiz.state = deepcopy(stateList["wizard"]["jump"])
 
     if ability == 1 and wiz.row < 5 then
         wiz.row +=1

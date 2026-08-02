@@ -9,6 +9,7 @@ logging = ""
 spawnRate = 4
 holdingButton = false
 infinite = -1
+songPart = 0
 
 spriteList= {
   gemIdle1 = 21,
@@ -207,19 +208,35 @@ function _update()
       holdingButton = true
       return
     elseif holdingButton then
+      resetGame()
       holdingButton = false
       gameState = "playing"
     end
   elseif gameState == "playing" then
+    if songPart == 0 then
+      music(0)
+      songPart += 1
+    end
     updatePlayer()
     updateEnergies()
     updateItems()
     updateWizard()
   elseif gameState == "gameOver" then
-    if btnp(4) then
-      gameState = "playing"
+    music(-1)
+    if btn(4) or btn(4) then
+      holdingButton = true
+      return
+    elseif holdingButton then
+      holdingButton = false
+      gameState = "splashScreen"
     end
+    return
   end
+end
+
+function resetGame()
+  resetBoard()
+  resetConsole()
 end
 
 function _draw()

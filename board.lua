@@ -1,4 +1,5 @@
-items = {
+function resetBoard()
+  items = {
     {
         row = 1,
         column = 1,
@@ -13,14 +14,15 @@ items = {
         age = 0,
         state = stateList["gem"]["idle"]
     }
-}
+  }
+end
 
 function updateWizard()
     local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
     if checkMapCollision(wiz.row, wiz.column, "point") then
         del(items, searchTable(items, "name", "gem"))
         sfx( 0, 0 )
-        spawnRate += flr(score/2)
+        increaseDifficulty()
         local randOpenSquare = getRandomOpenSquare()
         add(items, {
             row = randOpenSquare.row,
@@ -30,10 +32,21 @@ function updateWizard()
             state = stateList["gem"]["idle"]
         })
         score += 1
-    elseif checkMapCollision(wiz.row, wiz.column, "enemy") and wiz.state.name != "shield" then 
+    elseif checkMapCollision(wiz.row, wiz.column, "enemy") then 
+      if wiz.state.name == "shield" then
+          del(items, filterTable(items, function(x) return x.name == "flame" and x.row == wiz.row and x.column == wiz.column end)[1])
+      else
+        sfx(4, 0)
         gameState = "gameOver"
         return
+      end
     end
+end
+
+function increaseDifficulty()
+  if spawnRate < 15 then
+    spawnRate += flr(score/2)
+  end
 end
 
 function updateItems()
@@ -54,7 +67,6 @@ function updateItems()
     end
   end
 end
-
 
 function drawBoardState()
   animateTable(items)
