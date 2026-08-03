@@ -221,6 +221,7 @@ function _update()
       holdingButton = true
       return
     elseif holdingButton then
+      sfx( 5, 0)
       holdingButton = false
       gameState = "splashScreen"
     end
@@ -229,6 +230,7 @@ function _update()
 end
 
 function resetGame()
+  sfx( 5, 0)
   resetBoard()
   resetConsole()
   music(0)
