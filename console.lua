@@ -2,9 +2,11 @@ function resetConsole()
   playerLocYMin = 50
   playerLocYMax = 200
   playerLocX = 10
-  playerLocY = 90
-  playerMovement = 10
+  playerLocY = 94
   playerLane = 1
+  shieldJuice = 50
+  shieldJuiceGainRate = 3.8
+  shieldJuiceLoseRate = .35
 
   chargeMin = 1
   chargeMax = 15
@@ -13,14 +15,11 @@ function resetConsole()
   chargeAmount = chargeMin
   chargeMin = 1
   chargeMax = 15
-
   energies = {}
 
-  tabletXMin = 100
-  tabletXMax = 110
-  TalbetYMin = 87
-  TabletYDiff = 5
-  TabletSpaceBetween = 10  
+  tabletXMin = 84
+  TalbetYMin = 90
+  TabletSpaceBetween = 9  
   
   tablets = {
     {
@@ -60,12 +59,14 @@ function resetConsole()
 end
 
 function updatePlayer()
+  local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
+
   if btnp(2) and playerLane != 1 then 
-    playerLocY -= playerMovement 
+    playerLocY -= TabletSpaceBetween 
     playerLane -= 1 
   end
   if btnp(3) and playerLane != 4 then 
-    playerLocY += playerMovement 
+    playerLocY += TabletSpaceBetween 
     playerLane += 1
   end
 
@@ -78,9 +79,17 @@ function updatePlayer()
     fireCharge()
   end
 
-  if btn(5) then
-    local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
+  if btnp(5) and wiz.state.name != "shield" and shieldJuice != 0 then
     wiz.state = deepcopy(stateList["wizard"]["shield"])
+  elseif btnp(5) and wiz.state.name == "shield" then
+    wiz.state = deepcopy(stateList["wizard"]["idle"])
+  elseif shieldJuice <= 0 then
+    wiz.state = deepcopy(stateList["wizard"]["idle"])
+    shieldJuice = 0
+  end
+
+  if wiz.state.name == "shield" then
+    shieldJuice -= shieldJuiceLoseRate
   end
 end
 
@@ -95,6 +104,11 @@ function drawConsoleState()
     circfill(energy.x,energy.y, 3, 10)
     circfill(energy.x,energy.y, 2, 8)
   end
+
+  for i=1, shieldJuice/4, 1 do
+	    spr(106,104,114-i, 2,2)
+  end
+  map(12,11,96,88)
 end
 
 function fireCharge()
@@ -128,15 +142,18 @@ end
 
 function activateTablet(ability)
     local wiz = filterTable(items, function(x) return x.name == "wizard" end)[1]
-    --wiz.state = deepcopy(stateList["wizard"]["jump"])
 
     if ability == 1 and wiz.row < 5 then
         wiz.row +=1
+        if shieldJuice < 100 then shieldJuice += shieldJuiceGainRate end
     elseif ability == 2 and wiz.column < 8 then
         wiz.column += 1
+        if shieldJuice < 100 then shieldJuice += shieldJuiceGainRate end
     elseif ability == 3 and wiz.column > 1 then
         wiz.column -= 1
+        if shieldJuice < 100 then shieldJuice += shieldJuiceGainRate end
     elseif ability == 4 and wiz.row > 1 then
         wiz.row -=1
+        if shieldJuice < 100 then shieldJuice += shieldJuiceGainRate end
   end
 end

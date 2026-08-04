@@ -1,6 +1,6 @@
 function resetBoard()
   score = 0
-  spawnRate = 4
+  spawnRate = 7
 
   items = {
     {
@@ -49,8 +49,9 @@ function updateWizard()
 end
 
 function increaseDifficulty()
-  if spawnRate < 15 then
-    spawnRate += flr(score/2)
+  if spawnRate < 21 then
+    --spawnRate += flr(score/2)
+    spawnRate += 1
   end
 end
 
